@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
-  title: Website Prep API
-  version: 0.1.0
-  description: Convert caller-supplied HTML pages to llms.txt, llms-full.txt, and normalized Markdown.
+  title: PinkHive Paid Utility API
+  version: 0.2.0
+  description: Deterministic website-prep and customized Claude Code guard products paid through x402.
 servers:
-  - url: https://YOUR_DEPLOYED_HOST
+  - url: https://pinkhive-website-prep-x402.onrender.com
 paths:
   /health:
     get:
@@ -21,8 +21,6 @@ paths:
   /v1/site-prep:
     post:
       operationId: buildSitePrepBundle
-      security:
-        - ApiKey: []
       requestBody:
         required: true
         content:
@@ -38,12 +36,24 @@ paths:
           description: Invalid prepaid key
         "402":
           description: Payment required
+  /v1/claude-ship-guard:
+    post:
+      operationId: buildClaudeShipGuard
+      summary: Generate and deliver one customized Claude Code commit-guard ZIP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShipGuardRequest"
+      responses:
+        "200":
+          description: Base64-encoded deterministic ZIP with SHA-256 and file inventory
+        "400":
+          description: Invalid customization request
+        "402":
+          description: Base USDC payment required through x402
 components:
-  securitySchemes:
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-API-Key
   schemas:
     Page:
       type: object
@@ -51,6 +61,19 @@ components:
       properties:
         url: {type: string, format: uri}
         html: {type: string}
+    ShipGuardRequest:
+      type: object
+      required: [project_name]
+      properties:
+        project_name: {type: string, minLength: 1, maxLength: 80}
+        commit_style: {type: string, enum: [descriptive, conventional], default: descriptive}
+        secret_presets:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          maxItems: 3
+          items: {type: string, enum: [cloud, github, generic]}
+        max_subject_length: {type: integer, minimum: 50, maximum: 100, default: 72}
     SiteRequest:
       type: object
       required: [site_name, site_summary, pages]
@@ -62,4 +85,3 @@ components:
           minItems: 1
           maxItems: 20
           items: {$ref: "#/components/schemas/Page"}
-

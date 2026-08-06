@@ -1,0 +1,27 @@
+# PinkHive Paid Utilities
+
+> Deterministic, x402-paid API products with automatic Base USDC settlement and delivery.
+
+## Claude Ship Guard Generator
+
+- Endpoint: POST https://pinkhive-website-prep-x402.onrender.com/v1/claude-ship-guard
+- Price: $0.05 USDC on Base mainnet
+- Input: project_name; optional commit_style, secret_presets, max_subject_length
+- Output: Base64 deterministic ZIP, SHA-256, file inventory, options and decode instructions
+- Free sample: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402/releases/tag/ship-guard-sample-v1.0.0
+
+## Website Prep API
+
+- Endpoint: POST https://pinkhive-website-prep-x402.onrender.com/v1/site-prep
+- Price: $0.01 USDC on Base mainnet
+- Input: site_name, site_summary, and 1-20 caller-supplied HTML pages
+- Output: llms.txt, llms-full.txt and normalized Markdown
+
+## Documentation
+
+- Landing page: https://1355-xcz-o.github.io/pinkhive-website-prep-x402/
+- OpenAPI UI: https://pinkhive-website-prep-x402.onrender.com/docs
+- Source: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402
+- Receiver: 0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e
+
+The free Render service can cold-start and has shown intermittent no-server responses. Retry boundedly; do not assume a failed routing attempt was charged.

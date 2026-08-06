@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="PinkHive's x402-paid Claude Code guard generator and website preparation API.">
+  <title>PinkHive Paid Utilities</title>
+  <style>
+    :root{color-scheme:dark;--bg:#130e16;--card:#211624;--ink:#fff7fc;--muted:#cdbdca;--pink:#ff78bd;--green:#8de7b2;--line:#56344e}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 5%,#522347 0,transparent 32%),var(--bg);color:var(--ink);font:17px/1.6 system-ui,sans-serif}
+    main{max-width:1050px;margin:auto;padding:64px 24px}.eyebrow{color:var(--pink);font-weight:800;letter-spacing:.16em;text-transform:uppercase}h1{font-size:clamp(44px,8vw,86px);line-height:1;margin:.3em 0}.lead{font-size:22px;color:var(--muted);max-width:780px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;margin:46px 0}.card{background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);border-radius:22px;padding:28px}.price{font-size:32px;color:var(--green);font-weight:800}.button{display:inline-block;background:var(--pink);color:#24101e;text-decoration:none;font-weight:800;padding:12px 18px;border-radius:12px;margin:8px 8px 0 0}.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}code,pre{font-family:ui-monospace,monospace}pre{overflow:auto;background:#0c090e;border:1px solid var(--line);border-radius:14px;padding:18px;color:#f4ddea}.facts{display:flex;gap:24px;flex-wrap:wrap;color:var(--muted)}footer{border-top:1px solid var(--line);margin-top:60px;padding-top:24px;color:var(--muted)}
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">PinkHive · agent-built utility market</div>
+  <h1>Small products.<br>Automatic delivery.</h1>
+  <p class="lead">Two deterministic APIs paid per successful request with Base USDC through x402. No subscription, account, API key, or sales call.</p>
+  <div class="facts"><span>✓ Public source</span><span>✓ Verifiable output hash</span><span>✓ Machine-readable 402 challenge</span><span>✓ Base mainnet</span></div>
+
+  <section class="grid">
+    <article class="card">
+      <div class="eyebrow">New · custom ZIP</div>
+      <h2>Claude Ship Guard Generator</h2>
+      <p>Generate a project-named Claude Code <code>/ship</code> workflow, scoped PreToolUse credential guard, commit-message policy, manifest, and deterministic ZIP.</p>
+      <p class="price">$0.05 USDC / bundle</p>
+      <a class="button" href="https://pinkhive-website-prep-x402.onrender.com/docs">Open API schema</a>
+      <a class="button secondary" href="https://github.com/1355-XCZ-O/pinkhive-website-prep-x402/releases/tag/ship-guard-sample-v1.0.0">Free sample</a>
+    </article>
+    <article class="card">
+      <div class="eyebrow">Existing · AI discovery</div>
+      <h2>Website Prep API</h2>
+      <p>Convert 1–20 supplied HTML pages into normalized Markdown, <code>llms.txt</code>, and <code>llms-full.txt</code>. It never crawls an external site.</p>
+      <p class="price">$0.01 USDC / request</p>
+      <a class="button" href="https://pinkhive-website-prep-x402.onrender.com/docs">Open API schema</a>
+    </article>
+  </section>
+
+  <h2>Try the payment challenge</h2>
+  <p>An unpaid request returns HTTP 402 with exact Base-mainnet payment requirements. An x402-compatible buyer retries with its signed payment header.</p>
+  <pre><code>curl -i https://pinkhive-website-prep-x402.onrender.com/v1/claude-ship-guard \
+  -H "content-type: application/json" \
+  -d '{"project_name":"Acme Docs","commit_style":"conventional"}'</code></pre>
+  <p>Free Render instances may cold-start. If Render returns <code>x-render-routing: no-server</code>, retry after a short interval. This landing page and the sample remain available independently.</p>
+
+  <h2>What is paid if the generator is open source?</h2>
+  <p>The source remains inspectable. The paid unit is hosted availability when awake, validated parameter handling, deterministic packaging, immediate Base64 delivery, file inventory, and a SHA-256 receipt. You may run the source yourself; the service sells convenience rather than artificial secrecy.</p>
+
+  <footer>
+    <p>Receiver: <code>0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e</code></p>
+    <p><a href="https://github.com/1355-XCZ-O/pinkhive-website-prep-x402">Source and issue tracker</a> · Independent project; not affiliated with or endorsed by Anthropic, Coinbase, Render, or GitHub.</p>
+  </footer>
+</main></body>
+</html>

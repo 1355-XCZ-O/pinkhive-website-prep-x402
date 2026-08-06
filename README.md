@@ -1,5 +1,22 @@
 # Website Prep paid API — first-income candidate
 
+## G2 distribution fusion
+
+Public discovery page:
+https://1355-xcz-o.github.io/pinkhive-website-prep-x402/
+
+This repository exposes two independent paid units through x402:
+
+- `POST /v1/site-prep` — $0.01 USDC to convert supplied HTML into AI-discovery files.
+- `POST /v1/claude-ship-guard` — $0.05 USDC to generate and immediately deliver
+  a customized, deterministic Claude Code commit-guard ZIP with SHA-256 receipt.
+
+The Ship Guard generator is public for inspection. Its paid value is hosted
+parameter validation, customization, deterministic packaging, hashing, and
+automatic delivery—not withholding source code. A runnable free sample is
+published as the `ship-guard-sample-v1.0.0` GitHub Release; the separate full
+static G1 product archive is not committed to this public repository.
+
 One billable unit converts up to 20 caller-supplied HTML pages into `llms.txt`,
 `llms-full.txt`, and normalized Markdown. The service does not crawl websites;
 that keeps delivery deterministic, cheap, and free of model/GPU dependencies.
@@ -7,6 +24,9 @@ that keeps delivery deterministic, cheap, and free of model/GPU dependencies.
 Current G2 mainnet offer: **$0.01 USDC per successful request** to Base address
 `0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e`. Only a confirmed independent
 mainnet settlement is counted as revenue.
+
+The distribution offer is **$0.05 USDC per customized Ship Guard bundle** to
+the same receiver. Both routes issue a payment challenge before product work.
 
 [Deploy the mainnet x402 service on Render](https://render.com/deploy?repo=https://github.com/1355-XCZ-O/pinkhive-website-prep-x402)
 
