@@ -2,8 +2,8 @@
 
 ## G2 distribution fusion
 
-Public discovery page:
-https://1355-xcz-o.github.io/pinkhive-website-prep-x402/
+Public discovery repository:
+https://github.com/1355-XCZ-O/pinkhive-website-prep-x402
 
 This repository exposes two independent paid units through x402:
 
@@ -14,7 +14,7 @@ This repository exposes two independent paid units through x402:
 The Ship Guard generator is public for inspection. Its paid value is hosted
 parameter validation, customization, deterministic packaging, hashing, and
 automatic delivery—not withholding source code. A runnable free sample is
-published as the `ship-guard-sample-v1.0.0` GitHub Release; the separate full
+published under the `ship-guard-sample-v1.0.0` Git tag; the separate full
 static G1 product archive is not committed to this public repository.
 
 One billable unit converts up to 20 caller-supplied HTML pages into `llms.txt`,

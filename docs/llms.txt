@@ -8,7 +8,7 @@
 - Price: $0.05 USDC on Base mainnet
 - Input: project_name; optional commit_style, secret_presets, max_subject_length
 - Output: Base64 deterministic ZIP, SHA-256, file inventory, options and decode instructions
-- Free sample: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402/releases/tag/ship-guard-sample-v1.0.0
+- Free sample: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402/tree/ship-guard-sample-v1.0.0/samples/claude-ship-guard-sample
 
 ## Website Prep API
 
@@ -19,7 +19,7 @@
 
 ## Documentation
 
-- Landing page: https://1355-xcz-o.github.io/pinkhive-website-prep-x402/
+- Discovery repository: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402
 - OpenAPI UI: https://pinkhive-website-prep-x402.onrender.com/docs
 - Source: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402
 - Receiver: 0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e
