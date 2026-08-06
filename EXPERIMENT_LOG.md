@@ -36,6 +36,12 @@ a real machine-purchasable service while keeping every economic claim auditable.
   failure rather than a deployment or revenue success.
 - Prepared a Render Blueprint link as the minimum durable-hosting gate. It needs
   a human Render sign-in/OAuth confirmation but no payment secret.
+- The human confirmed the Blueprint. Monitoring observed the expected Render
+  hostname transition from `404 no-server` to two consecutive healthy `200`
+  responses at `https://pinkhive-website-prep-x402.onrender.com/health`.
+- An unpaid public POST returned HTTP 402 with `PAYMENT-REQUIRED`: exact scheme,
+  Base mainnet, Base USDC, amount 10,000 atomic units ($0.01), the configured
+  receiver, and Bazaar POST metadata. This proves gating, not income.
 
 ## Revenue accounting rule
 

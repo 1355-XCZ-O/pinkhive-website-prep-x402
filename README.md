@@ -107,8 +107,8 @@ discovery, payment fees, support, and idle time dominate the marginal compute.
 
 ## Current deployment status
 
-The repository and mainnet payment challenge are verified, but no durable public
-service URL exists yet. A no-account Cloudflare Quick Tunnel was attempted on
-2026-08-07; its process stayed alive but returned no auditable public URL within
-the experiment window, so both the tunnel and local API process were stopped.
-Revenue remains zero.
+The durable public service is live at
+`https://pinkhive-website-prep-x402.onrender.com`. Health returned HTTP 200 on
+consecutive probes, and an unpaid request to `/v1/site-prep` returned a valid
+Base-mainnet HTTP 402 challenge with Bazaar metadata. This proves deployment and
+payment gating only; revenue remains zero until an independent payment settles.

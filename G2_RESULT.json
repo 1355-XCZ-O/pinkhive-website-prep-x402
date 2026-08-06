@@ -1,9 +1,9 @@
 {
-  "work_status": "partial",
+  "work_status": "deployment_complete_income_pending",
   "generation": 2,
   "product": "PinkHive Website Prep x402 API",
   "public_repository": "https://github.com/1355-XCZ-O/pinkhive-website-prep-x402",
-  "public_service_url": null,
+  "public_service_url": "https://pinkhive-website-prep-x402.onrender.com",
   "receiver": "0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e",
   "offer": {
     "network": "eip155:8453",
@@ -36,6 +36,13 @@
       "evidence": "cloudflared 2026.7.3 remained running but emitted no auditable public URL within the bounded attempt; the exact tunnel and API processes were stopped and port 18402 was released.",
       "public_url": null,
       "external_cost_usd": 0
+    },
+    {
+      "action": "Monitored the human-confirmed Render Blueprint deployment and verified the resulting public service.",
+      "result": "success",
+      "url": "https://pinkhive-website-prep-x402.onrender.com",
+      "evidence": "GET /health returned HTTP 200 twice; unpaid POST /v1/site-prep returned HTTP 402 with a PAYMENT-REQUIRED header.",
+      "external_cost_usd": 0
     }
   ],
   "validation": [
@@ -43,7 +50,9 @@
     {"check": "mainnet PaymentMiddlewareASGI challenge with live OpenX402 /supported", "result": "HTTP 402 with PAYMENT-REQUIRED; network eip155:8453; payTo matches public receiver; amount 10000; Base USDC asset correct"},
     {"check": "decoded Bazaar extension", "result": "present with method POST and input/output schema"},
     {"check": "local mainnet service health before tunnel", "result": "HTTP 200; correct network, receiver, $0.01 price, facilitator, and discovery marker"},
-    {"check": "post-attempt process cleanup", "result": "owned cloudflared and Python service processes explicitly stopped; no intentional G2 service remains"}
+    {"check": "post-attempt process cleanup", "result": "owned cloudflared and Python service processes explicitly stopped; no local G2 service remains"},
+    {"check": "public Render health", "result": "HTTP 200 at https://pinkhive-website-prep-x402.onrender.com/health on two consecutive probes"},
+    {"check": "public unpaid mainnet challenge", "result": "HTTP 402; PAYMENT-REQUIRED present; exact scheme; eip155:8453; Base USDC; amount 10000; correct payTo; Bazaar metadata present with POST method; resource URL matches public endpoint"}
   ],
   "income": {
     "gross_revenue_usd": 0,
@@ -55,24 +64,15 @@
     "Public source publication was fully automatable with the existing GitHub authorization.",
     "A real Base-mainnet x402 challenge no longer requires CDP credentials when a live public facilitator is selected.",
     "Temporary tunnel availability is not equivalent to durable hosting and failed this bounded attempt.",
+    "The human-confirmed Render Blueprint produced a durable public hostname and passed health/payment-challenge probes.",
     "Bazaar metadata can be advertised immediately, but facilitator catalogs generally require a reachable endpoint and may require a successful paid call before indexing."
   ],
   "next_external_gate": {
-    "type": "persistent_host_oauth",
-    "minimum_human_action": "Open the Render deploy link, authenticate/authorize GitHub if prompted, and confirm creation of the free Blueprint service.",
-    "deploy_url": "https://render.com/deploy?repo=https://github.com/1355-XCZ-O/pinkhive-website-prep-x402",
-    "preconfigured": [
-      "public GitHub repository",
-      "Dockerfile.x402",
-      "Base mainnet network",
-      "public receiving address",
-      "OpenX402 facilitator URL",
-      "$0.01 price",
-      "health check"
-    ],
+    "type": "independent_mainnet_buyer",
+    "minimum_human_action": "No further hosting action is required. A genuinely independent buyer must choose to sign and submit the advertised $0.01 USDC payment before revenue can be recorded.",
+    "public_endpoint": "https://pinkhive-website-prep-x402.onrender.com/v1/site-prep",
+    "verified_offer": ["exact x402 v2", "Base mainnet", "Base USDC", "10000 atomic units", "correct public receiver", "Bazaar POST metadata"],
     "still_not_authorized": [
-      "accepting third-party hosting terms on behalf of the human",
-      "host OAuth/account creation",
       "signing a buyer transaction or manufacturing a self-payment"
     ]
   }
