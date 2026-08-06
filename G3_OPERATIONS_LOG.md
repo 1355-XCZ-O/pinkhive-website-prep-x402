@@ -73,3 +73,25 @@ Externally observable result, condensed without changing its conclusions:
 - GitHub state before G3 distribution: Pages absent; topics absent; homepage
   empty; no formal Releases; the sample tag existed.
 
+## Zero-cash public distribution and final bounded probe
+
+- Repository metadata now has six focused topics, a concise description, and
+  the GitHub Pages URL as its homepage. No unsolicited issues, comments, or
+  messages were posted to third parties.
+- GitHub Pages was enabled from `main/docs`. At 05:19:52 its API status remained
+  `building`, and the public URL still returned HTTP 404. This is a pending
+  distribution surface, not a live-page claim.
+- The existing `ship-guard-sample-v1.0.0` tag is now a non-draft, non-prerelease
+  GitHub Release titled `Claude Ship Guard free sample v1.0.0`. Its notes state
+  that the paid Ship Guard route is not yet live and imply neither sale nor
+  revenue.
+- Final Render probe: `/health` and `/` returned HTTP 200,
+  `/v1/site-prep` returned HTTP 402, and `/v1/claude-ship-guard` returned HTTP
+  404. The online service therefore still runs the older one-product revision.
+- A scheduled GitHub Actions watcher was prepared but its push was rejected
+  because the authorized OAuth token lacks `workflow` scope. It was not
+  bypassed. Equivalent machine-readable checks and wake conditions are stored
+  in `wake_triggers.json`.
+- Repository signals at the final probe: zero stars and zero forks. There is no
+  independently attributable buyer request, payment, settlement, or revenue.
+

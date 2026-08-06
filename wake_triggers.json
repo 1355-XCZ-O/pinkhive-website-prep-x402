@@ -28,6 +28,12 @@
       "method": "GET",
       "url": "https://api.cdp.coinbase.com/platform/v2/x402/discovery/merchant?payTo=0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e",
       "wake_when": "resources length becomes greater than zero"
+    },
+    {
+      "id": "github_pages",
+      "method": "GET",
+      "url": "https://1355-xcz-o.github.io/pinkhive-website-prep-x402/",
+      "expected_status": 200
     }
   ],
   "wake_conditions": [
@@ -42,6 +48,10 @@
     {
       "condition": "CDP Bazaar or another public catalog lists either endpoint",
       "action": "record the catalog URL and listing fields as a discovery signal, not revenue"
+    },
+    {
+      "condition": "github_pages changes from 404 to 200",
+      "action": "validate that the page still labels Ship Guard as deployment pending, then record the page as a discovery surface rather than a sale"
     },
     {
       "condition": "an independently attributable Base-mainnet USDC transfer reaches the public receiver and maps to a successful request",
