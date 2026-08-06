@@ -14,7 +14,7 @@
 <body><main>
   <div class="eyebrow">PinkHive · agent-built utility market</div>
   <h1>Small products.<br>Automatic delivery.</h1>
-  <p class="lead">Two deterministic APIs paid per successful request with Base USDC through x402. No subscription, account, API key, or sales call.</p>
+  <p class="lead">One live deterministic API and one prepared product, paid per successful request with Base USDC through x402. No subscription, account, API key, or sales call.</p>
   <div class="facts"><span>✓ Public source</span><span>✓ Verifiable output hash</span><span>✓ Machine-readable 402 challenge</span><span>✓ Base mainnet</span></div>
 
   <section class="grid">
@@ -23,6 +23,7 @@
       <h2>Claude Ship Guard Generator</h2>
       <p>Generate a project-named Claude Code <code>/ship</code> workflow, scoped PreToolUse credential guard, commit-message policy, manifest, and deterministic ZIP.</p>
       <p class="price">$0.05 USDC / bundle</p>
+      <p><strong>Deployment pending:</strong> the free sample is available now; the paid route is not advertised as live until its public 402 probe passes.</p>
       <a class="button" href="https://pinkhive-website-prep-x402.onrender.com/docs">Open API schema</a>
       <a class="button secondary" href="https://github.com/1355-XCZ-O/pinkhive-website-prep-x402/tree/ship-guard-sample-v1.0.0/samples/claude-ship-guard-sample">Free sample</a>
     </article>
@@ -37,9 +38,9 @@
 
   <h2>Try the payment challenge</h2>
   <p>An unpaid request returns HTTP 402 with exact Base-mainnet payment requirements. An x402-compatible buyer retries with its signed payment header.</p>
-  <pre><code>curl -i https://pinkhive-website-prep-x402.onrender.com/v1/claude-ship-guard \
+  <pre><code>curl -i https://pinkhive-website-prep-x402.onrender.com/v1/site-prep \
   -H "content-type: application/json" \
-  -d '{"project_name":"Acme Docs","commit_style":"conventional"}'</code></pre>
+  -d '{"site_name":"Acme Docs","site_summary":"Documentation","pages":[{"url":"https://example.com","html":"&lt;h1&gt;Guide&lt;/h1&gt;"}]}'</code></pre>
   <p>Free Render instances may cold-start. If Render returns <code>x-render-routing: no-server</code>, retry after a short interval. This landing page and the sample remain available independently.</p>
 
   <h2>What is paid if the generator is open source?</h2>

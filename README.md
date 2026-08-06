@@ -11,6 +11,10 @@ This repository exposes two independent paid units through x402:
 - `POST /v1/claude-ship-guard` — $0.05 USDC to generate and immediately deliver
   a customized, deterministic Claude Code commit-guard ZIP with SHA-256 receipt.
 
+G3 live audit: the deployed revision currently serves Site Prep, while the Ship
+Guard route still returns HTTP 404. Ship Guard is prepared and locally tested,
+but is not claimed as a live paid route until the public watcher observes 402.
+
 The Ship Guard generator is public for inspection. Its paid value is hosted
 parameter validation, customization, deterministic packaging, hashing, and
 automatic delivery—not withholding source code. A runnable free sample is

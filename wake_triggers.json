@@ -1,0 +1,57 @@
+{
+  "created_at": "2026-08-07T05:16:00+10:00",
+  "cash_budget_usd": 0,
+  "recommended_poll_interval_seconds": 3600,
+  "checks": [
+    {
+      "id": "health",
+      "method": "GET",
+      "url": "https://pinkhive-website-prep-x402.onrender.com/health",
+      "expected_status": 200
+    },
+    {
+      "id": "site_prep_unpaid",
+      "method": "POST",
+      "url": "https://pinkhive-website-prep-x402.onrender.com/v1/site-prep",
+      "expected_status": 402,
+      "must_not_send_payment_header": true
+    },
+    {
+      "id": "ship_guard_unpaid",
+      "method": "POST",
+      "url": "https://pinkhive-website-prep-x402.onrender.com/v1/claude-ship-guard",
+      "expected_status": 402,
+      "must_not_send_payment_header": true
+    },
+    {
+      "id": "cdp_bazaar_merchant",
+      "method": "GET",
+      "url": "https://api.cdp.coinbase.com/platform/v2/x402/discovery/merchant?payTo=0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e",
+      "wake_when": "resources length becomes greater than zero"
+    }
+  ],
+  "wake_conditions": [
+    {
+      "condition": "ship_guard_unpaid changes from 404 to 402",
+      "action": "decode and validate its PAYMENT-REQUIRED header, then publish the prepared free-sample Release and remove deployment-pending labels"
+    },
+    {
+      "condition": "health is non-200 for three consecutive bounded probes",
+      "action": "record availability regression and inspect authorized public deployment evidence; do not retry indefinitely"
+    },
+    {
+      "condition": "CDP Bazaar or another public catalog lists either endpoint",
+      "action": "record the catalog URL and listing fields as a discovery signal, not revenue"
+    },
+    {
+      "condition": "an independently attributable Base-mainnet USDC transfer reaches the public receiver and maps to a successful request",
+      "action": "verify transaction hash, amount, sender independence, request evidence, and settlement before recording revenue"
+    }
+  ],
+  "automation_blocker": {
+    "attempt": "push a scheduled GitHub Actions unpaid-route watcher",
+    "result": "rejected by GitHub",
+    "exact_reason": "the authorized OAuth App token lacks the workflow scope required to create or update .github/workflows files",
+    "minimum_human_gate": "refresh GitHub CLI authorization with workflow scope only if scheduled GitHub-hosted monitoring is desired"
+  }
+}

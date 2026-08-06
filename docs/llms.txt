@@ -5,6 +5,7 @@
 ## Claude Ship Guard Generator
 
 - Endpoint: POST https://pinkhive-website-prep-x402.onrender.com/v1/claude-ship-guard
+- Deployment status checked 2026-08-07: pending; public endpoint returned 404, so use the free sample until a 402 probe passes
 - Price: $0.05 USDC on Base mainnet
 - Input: project_name; optional commit_style, secret_presets, max_subject_length
 - Output: Base64 deterministic ZIP, SHA-256, file inventory, options and decode instructions
