@@ -1,0 +1,65 @@
+openapi: 3.1.0
+info:
+  title: Website Prep API
+  version: 0.1.0
+  description: Convert caller-supplied HTML pages to llms.txt, llms-full.txt, and normalized Markdown.
+servers:
+  - url: https://YOUR_DEPLOYED_HOST
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: Service and payment readiness
+  /v1/pricing:
+    get:
+      operationId: pricing
+      responses:
+        "200":
+          description: Current billable-unit definition
+  /v1/site-prep:
+    post:
+      operationId: buildSitePrepBundle
+      security:
+        - ApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteRequest"
+      responses:
+        "200":
+          description: Generated bundle; one successful metered unit
+        "400":
+          description: Invalid request, not metered
+        "401":
+          description: Invalid prepaid key
+        "402":
+          description: Payment required
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Page:
+      type: object
+      required: [url, html]
+      properties:
+        url: {type: string, format: uri}
+        html: {type: string}
+    SiteRequest:
+      type: object
+      required: [site_name, site_summary, pages]
+      properties:
+        site_name: {type: string}
+        site_summary: {type: string}
+        pages:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items: {$ref: "#/components/schemas/Page"}
+

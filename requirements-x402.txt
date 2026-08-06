@@ -1,0 +1,4 @@
+-r requirements.txt
+cdp-sdk==1.47.1
+x402[evm,fastapi,extensions]==2.18.0
+uvicorn==0.52.1

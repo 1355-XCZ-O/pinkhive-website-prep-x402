@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: pinkhive-website-prep
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: API_KEYS_JSON
+        sync: false
+      - key: PRICE_USD
+        value: "0.02"
+

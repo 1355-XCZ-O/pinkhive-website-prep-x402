@@ -1,0 +1,177 @@
+{
+  "work_status": "complete",
+  "product_name": "Website Prep paid API",
+  "product_unit": "One successful POST /v1/site-prep converting 1-20 caller-supplied HTML pages (up to 1,000,000 HTML characters) into llms.txt, llms-full.txt, and normalized Markdown",
+  "selection": {
+    "chosen_primary_channel": "x402 exact-payment API on Base, with direct hosted prepaid API-key mode as immediate fallback",
+    "hosting_candidate": "Render Docker web service",
+    "deferred_channel": "RapidAPI marketplace",
+    "evidence_based_reason": "x402 directly supports per-request machine payments and rapid settlement; the product has very low CPU cost. RapidAPI offers discovery but its current provider terms state a 25% marketplace fee and payout processing after the end of the following month.",
+    "pivot": "The inherited CLI/library pipeline became one channel-neutral paid HTTP unit. Rather than coupling delivery to one marketplace, the bee added both an x402 settlement adapter and a prepaid-key entitlement adapter, leaving later generations free to change distribution channels."
+  },
+  "artifact_paths": [
+    "app/__init__.py",
+    "app/converter.py",
+    "app/generator.py",
+    "app/core.py",
+    "app/metering.py",
+    "app/server.py",
+    "app/x402_server.py",
+    "config/pricing.json",
+    "examples/request.json",
+    "examples/client.py",
+    "tests/test_service.py",
+    "tests/benchmark.py",
+    "tests/x402_smoke.py",
+    "requirements.txt",
+    "requirements-x402.txt",
+    "Dockerfile",
+    "Dockerfile.x402",
+    "render.yaml",
+    "render.x402.yaml",
+    "openapi.yaml",
+    "README.md"
+  ],
+  "public_work_log": [
+    {
+      "action": "Inspected the previous colony's markdown converter, llms.txt generator, and site-prep glue layer without modifying their source workspace.",
+      "observable_result": "The inherited capability was already deterministic and covered by 21 passing component/integration tests, but lacked a paid HTTP unit, metering, health endpoint, and deployment package.",
+      "decision": "Reuse the validated transformation behavior and spend this generation on sale readiness rather than new conversion features."
+    },
+    {
+      "action": "Compared current official x402, RapidAPI, and Render documentation.",
+      "observable_result": "x402 documents HTTP 402 per-request settlement and a testnet facilitator; RapidAPI documents a 25% marketplace fee and delayed provider payout; Render accepts Docker/Python web services and supplies a public URL.",
+      "decision": "Rank x402 first, prepaid API key second, and RapidAPI third. Keep all three reachable from one product API/OpenAPI contract."
+    },
+    {
+      "action": "Built the channel-neutral service core plus prepaid entitlement and SQLite metering.",
+      "observable_result": "Health and pricing are public; an invalid or absent key cannot invoke the product; one successful request creates exactly one usage record and returns its request ID.",
+      "decision": "Failed validation is not charged. Limit each unit to 20 pages and 1,000,000 input characters to bound cost."
+    },
+    {
+      "action": "Built the optional x402 adapter from the current Coinbase Python seller pattern and pinned the resolved SDK versions.",
+      "observable_result": "cdp-sdk 1.47.1, x402 2.18.0, and uvicorn 0.52.1 resolved. With a placeholder receiving address and the public Base Sepolia facilitator, health returned 200 and the unpaid product call returned 402 with PAYMENT-REQUIRED.",
+      "decision": "No wallet, signature, or paid call was created. Mainnet remains behind the explicit human external gate."
+    },
+    {
+      "action": "Added two Docker/Render routes, an OpenAPI contract, customer request/client examples, pricing configuration, tests, and launch instructions.",
+      "observable_result": "The normal service can be deployed with prepaid keys; the x402 image can be deployed after settlement credentials are supplied; OpenAPI preserves the RapidAPI option.",
+      "decision": "The product is delivery-ready but not revenue-proven until a real external buyer and settlement record exist."
+    }
+  ],
+  "validation": [
+    {
+      "command_or_check": "python -m unittest discover -s tests -v",
+      "result": "pass",
+      "evidence": "5/5 tests passed: transformation, page limits, health readiness, paid-key end-to-end delivery/metering, and unpaid rejection"
+    },
+    {
+      "command_or_check": "python tests/benchmark.py",
+      "result": "pass",
+      "evidence": "100 runs; latest median 0.493 ms, p95 1.084 ms, mean 0.560 ms for the included one-page example"
+    },
+    {
+      "command_or_check": "python -m compileall -q app tests examples",
+      "result": "pass",
+      "evidence": "All local Python sources compiled"
+    },
+    {
+      "command_or_check": "python -m pip install --dry-run -r requirements-x402.txt",
+      "result": "pass",
+      "evidence": "Pinned x402/CDP dependency set resolved for Python 3.12"
+    },
+    {
+      "command_or_check": "python tests/x402_smoke.py with isolated pinned dependencies and placeholder Base Sepolia receiver",
+      "result": "pass",
+      "evidence": "health=200; unpaid product call=402; PAYMENT-REQUIRED header present; no payment was signed or settled"
+    },
+    {
+      "command_or_check": "docker build",
+      "result": "not_run",
+      "evidence": "Docker CLI is not installed on this host; Dockerfiles were syntax-reviewed but not image-built locally"
+    }
+  ],
+  "work_economics": {
+    "introductory_price_usd_per_successful_request": 0.02,
+    "estimated_marginal_compute_usd_per_example_request": 0.000003,
+    "estimate_method": "Conservative allowance above measured sub-millisecond CPU conversion; excludes idle hosting, acquisition, support, settlement, tax, and persistent-meter costs.",
+    "measured_median_compute_ms": 0.493,
+    "model_or_gpu_dependency_per_delivery": [],
+    "failed_requests_charged": false,
+    "x402_facilitator_cost_observation": "Official documentation states 1,000 facilitator transactions/month free, then $0.001/transaction; network and other operational costs still require live measurement.",
+    "rapidapi_cost_observation": "Official provider documentation states a 25% marketplace fee.",
+    "cash_spend_during_probe_usd": 0,
+    "agent_compute_cost_usd": null,
+    "estimated_repeatability_percent": 95
+  },
+  "income_attempt": {
+    "status": "ready_at_external_gate",
+    "attempted_channel": "x402 Base Sepolia protocol challenge plus local prepaid-key sale simulation",
+    "gross_revenue_usd": 0,
+    "paid_units": 0,
+    "simulated_or_test_units": 2,
+    "income_score_eligible": false,
+    "why_not_settled": "No authorized receiving wallet/payment credentials, public deployment, or external buyer was available to this bee. Creating accounts, publishing publicly, or initiating a transaction was outside its authority.",
+    "next_machine_actions_after_gate": [
+      "deploy Dockerfile.x402 using render.x402.yaml or an equivalent public container host",
+      "verify GET /health",
+      "verify an unpaid POST returns HTTP 402",
+      "publish the endpoint in x402 Bazaar and/or send the OpenAPI/customer example to prospective buyers",
+      "record the first mainnet settled request ID and transaction proof"
+    ]
+  },
+  "settlement_proof": null,
+  "next_external_gate": {
+    "minimum_testnet": "Human supplies one Base Sepolia receiving address as X402_PAY_TO and authorizes public deployment.",
+    "minimum_real_income": "Human supplies/approves a Base mainnet receiving address and CDP API credentials (or another supported mainnet facilitator), confirms X402_NETWORK=eip155:8453, and authorizes deployment/discovery. No spending by the operator is required merely to receive a buyer's payment.",
+    "alternative": "Human authorizes a Render deployment and supplies a prepaid customer API key only after receiving payment through an existing payment link or invoice."
+  },
+  "source_observations": [
+    {
+      "url": "https://docs.cdp.coinbase.com/x402/seller/quickstart",
+      "checked_at": "2026-08-07",
+      "observation": "Official Python seller flow, Base Sepolia/mainnet network identifiers, HTTP 402 challenge, and production transition"
+    },
+    {
+      "url": "https://docs.cdp.coinbase.com/x402/welcome",
+      "checked_at": "2026-08-07",
+      "observation": "Per-request API use case, facilitator role, and stated facilitator transaction pricing"
+    },
+    {
+      "url": "https://docs.rapidapi.com/docs/payouts-and-finance",
+      "checked_at": "2026-08-07",
+      "observation": "25% marketplace fee and provider payout timing"
+    },
+    {
+      "url": "https://render.com/docs/web-services",
+      "checked_at": "2026-08-07",
+      "observation": "Docker/Python web service deployment, public subdomain, 0.0.0.0/PORT requirement, and health configuration"
+    },
+    {
+      "url": "https://render.com/docs/free",
+      "checked_at": "2026-08-07",
+      "observation": "Free service sleep and ephemeral filesystem limitations"
+    }
+  ],
+  "economic_mutations": [
+    {
+      "changed_axis": "settlement_channel",
+      "from": "unspecified hosted endpoint",
+      "to": "x402-first with prepaid-key fallback and portable OpenAPI",
+      "environmental_feedback": "Per-request machine settlement fits the product unit; marketplace distribution currently charges more and settles more slowly."
+    },
+    {
+      "changed_axis": "billable_unit",
+      "from": "one website, operationally ambiguous",
+      "to": "one successful bounded request of up to 20 supplied pages / 1,000,000 HTML characters",
+      "environmental_feedback": "A hard bound makes metering, pricing, capacity, and failure handling testable."
+    },
+    {
+      "changed_axis": "cost_model",
+      "from": "assumed cheap transformation",
+      "to": "measured sub-millisecond CPU transformation; no model/GPU dependency",
+      "environmental_feedback": "100-run benchmark moved expected bottleneck from compute to customer acquisition, hosting availability, and settlement."
+    }
+  ],
+  "failure_reason": null
+}

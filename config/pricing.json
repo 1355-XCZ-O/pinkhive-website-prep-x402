@@ -1,0 +1,24 @@
+{
+  "currency": "USD",
+  "introductory_price_per_request": 0.01,
+  "unit": "one successful POST /v1/site-prep, maximum 20 supplied pages and 1,000,000 HTML characters",
+  "failed_requests_charged": false,
+  "estimated_marginal_compute_usd": 0.000003,
+  "gross_margin_before_hosting_and_payment_fees_percent": 99.985,
+  "channel_cost_assumptions_checked_2026_08_07": {
+    "x402_cdp_facilitator": "first 1000 transactions/month free, then $0.001/transaction according to Coinbase documentation",
+    "rapidapi": "25% marketplace fee; payout after end of following month according to provider documentation"
+  },
+  "candidate_channels": {
+    "x402_base": {"priority": 1, "settlement": "USDC on Base", "integration": "app/x402_server.py"},
+    "prepaid_api_key": {"priority": 2, "settlement": "external invoice/payment link then issue key", "integration": "app/server.py"},
+    "rapidapi": {"priority": 3, "reason": "marketplace discovery but slower payout and 25% marketplace fee"}
+  },
+  "generation_2_mutation": {
+    "reason": "optimize for first independently settled unit rather than maximum early gross margin",
+    "from_price_usd": 0.02,
+    "to_price_usd": 0.01,
+    "mainnet_facilitator": "https://facilitator.openx402.ai",
+    "receiving_address": "0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e"
+  }
+}

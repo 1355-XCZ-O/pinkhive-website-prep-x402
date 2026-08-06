@@ -1,0 +1,11 @@
+{
+  "site_name": "Acme Docs",
+  "site_summary": "Documentation prepared for language-model discovery.",
+  "pages": [
+    {
+      "url": "https://example.com/guide",
+      "html": "<html><head><title>Guide</title><meta name=\"description\" content=\"A short guide\"></head><body><main><h1>Start here</h1><p>Install the package.</p></main></body></html>"
+    }
+  ]
+}
+

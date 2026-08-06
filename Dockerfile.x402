@@ -1,0 +1,9 @@
+FROM python:3.12-slim
+WORKDIR /service
+COPY requirements.txt requirements-x402.txt ./
+RUN pip install --no-cache-dir -r requirements-x402.txt
+COPY app app
+COPY config config
+ENV X402_NETWORK=eip155:8453 X402_PAY_TO=0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e X402_FACILITATOR_URL=https://facilitator.openx402.ai PRICE_USD=0.01 METER_DB=/tmp/usage.sqlite3 PORT=8402
+EXPOSE 8402
+CMD ["sh", "-c", "python -m uvicorn app.x402_server:app --host 0.0.0.0 --port ${PORT}"]

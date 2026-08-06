@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: pinkhive-website-prep-x402
+    runtime: docker
+    dockerfilePath: ./Dockerfile.x402
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: X402_NETWORK
+        value: eip155:8453
+      - key: X402_PAY_TO
+        value: 0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e
+      - key: X402_FACILITATOR_URL
+        value: https://facilitator.openx402.ai
+      - key: PRICE_USD
+        value: "0.01"
