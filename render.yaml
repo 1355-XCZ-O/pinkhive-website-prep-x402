@@ -2,7 +2,11 @@ services:
   - type: web
     name: pinkhive-website-prep-x402
     runtime: docker
+    repo: https://github.com/1355-XCZ-O/pinkhive-website-prep-x402
+    branch: main
+    autoDeployTrigger: commit
     dockerfilePath: ./Dockerfile.x402
+    dockerContext: .
     plan: free
     healthCheckPath: /health
     envVars:
