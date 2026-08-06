@@ -13,12 +13,14 @@ from x402.server import x402ResourceServer
 from x402.extensions.bazaar import OutputConfig, bazaar_resource_server_extension, declare_discovery_extension
 
 from .core import build_site_bundle
+from .evm_receipt import RpcError, query_base_receipt
 from .metering import Meter
 from .ship_guard import build_ship_guard_bundle
 
 NETWORK = os.environ.get("X402_NETWORK", "eip155:84532")
 PRICE = os.environ.get("PRICE_USD", "0.02")
 SHIP_GUARD_PRICE = os.environ.get("SHIP_GUARD_PRICE_USD", "0.05")
+EVM_RECEIPT_PRICE = os.environ.get("EVM_RECEIPT_PRICE_USD", "0.01")
 DEFAULT_PAY_TO = "0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e"
 
 
@@ -154,6 +156,53 @@ ship_guard_discovery = declare_discovery_extension(
     ),
 )
 ship_guard_discovery["bazaar"]["info"]["input"]["method"] = "POST"
+evm_receipt_discovery = declare_discovery_extension(
+    input={"tx_hash": "0x" + "00" * 32},
+    input_schema={
+        "type": "object",
+        "properties": {
+            "tx_hash": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{64}$",
+                "description": "Base-mainnet transaction hash",
+            }
+        },
+        "required": ["tx_hash"],
+        "additionalProperties": False,
+    },
+    body_type="json",
+    output=OutputConfig(
+        example={
+            "chain_id": 8453,
+            "network": "base-mainnet",
+            "tx_hash": "0x" + "00" * 32,
+            "state": "confirmed",
+            "observed_head": 50000000,
+            "block_number": 49999999,
+            "confirmations": 2,
+            "success": True,
+            "gas_used": 21000,
+            "rpc_calls": 2,
+        },
+        schema={
+            "type": "object",
+            "properties": {
+                "chain_id": {"type": "integer"},
+                "network": {"type": "string"},
+                "tx_hash": {"type": "string"},
+                "state": {"type": "string", "enum": ["confirmed", "not_found_or_pending"]},
+                "observed_head": {"type": "integer"},
+                "block_number": {"type": ["integer", "null"]},
+                "confirmations": {"type": "integer"},
+                "success": {"type": ["boolean", "null"]},
+                "gas_used": {"type": ["integer", "null"]},
+                "rpc_calls": {"type": "integer"},
+            },
+            "required": ["chain_id", "network", "tx_hash", "state", "observed_head", "confirmations", "success", "rpc_calls"],
+        },
+    ),
+)
+evm_receipt_discovery["bazaar"]["info"]["input"]["method"] = "POST"
 routes = {
     "POST /v1/site-prep": RouteConfig(
         accepts=[PaymentOption(scheme="exact", pay_to=PAY_TO, price=f"${PRICE}", network=NETWORK)],
@@ -171,8 +220,16 @@ routes = {
         tags=["claude-code", "developer-tools", "git", "security", "zip", "automation"],
         extensions=ship_guard_discovery,
     ),
+    "POST /v1/base-transaction-receipt": RouteConfig(
+        accepts=[PaymentOption(scheme="exact", pay_to=PAY_TO, price=f"${EVM_RECEIPT_PRICE}", network=NETWORK)],
+        mime_type="application/json",
+        description="Return one normalized Base-mainnet transaction receipt at an observed chain head",
+        service_name="PinkHive Base Transaction Receipt",
+        tags=["base", "evm", "transaction", "receipt", "confirmations"],
+        extensions=evm_receipt_discovery,
+    ),
 }
-app = FastAPI(title="PinkHive paid utility API", version="0.2.0")
+app = FastAPI(title="PinkHive paid utility API", version="0.3.0")
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=resource_server)
 meter = Meter()
 
@@ -186,6 +243,9 @@ async def health():
         "pay_to": PAY_TO,
         "price_usd": PRICE,
         "ship_guard_price_usd": SHIP_GUARD_PRICE,
+        "evm_receipt_price_usd": EVM_RECEIPT_PRICE,
+        "evm_receipt_rpc": os.environ.get("BASE_RPC_URL", "https://mainnet.base.org"),
+        "revision": os.environ.get("RENDER_GIT_COMMIT", "local"),
         "facilitator": facilitator_config.url,
         "discovery_extension": "bazaar",
     }
@@ -199,6 +259,7 @@ async def product():
         "paid_endpoints": [
             {"route": "POST /v1/site-prep", "price_usd": PRICE, "unit": "convert 1-20 supplied HTML pages"},
             {"route": "POST /v1/claude-ship-guard", "price_usd": SHIP_GUARD_PRICE, "unit": "generate one customized guard ZIP"},
+            {"route": "POST /v1/base-transaction-receipt", "price_usd": EVM_RECEIPT_PRICE, "unit": "normalize one Base transaction receipt using two read-only RPC calls"},
         ],
         "health": "/health",
         "docs": "/docs",
@@ -226,5 +287,18 @@ async def claude_ship_guard(payload: dict):
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     input_chars = len(str(payload))
     request_id = meter.record("x402-settled", "/v1/claude-ship-guard", 200, 1, input_chars, result["bytes"])
+    result.update({"request_id": request_id, "metered_units": 1})
+    return result
+
+
+@app.post("/v1/base-transaction-receipt")
+async def base_transaction_receipt(payload: dict):
+    try:
+        result = await asyncio.to_thread(query_base_receipt, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RpcError as exc:
+        raise HTTPException(status_code=503, detail="Base RPC temporarily unavailable") from exc
+    request_id = meter.record("x402-settled", "/v1/base-transaction-receipt", 200, 1, len(str(payload)), len(str(result)))
     result.update({"request_id": request_id, "metered_units": 1})
     return result

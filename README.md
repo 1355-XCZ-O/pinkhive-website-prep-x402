@@ -1,5 +1,17 @@
 # Website Prep paid API — first-income candidate
 
+## G5 EVM demand representative
+
+`POST /v1/base-transaction-receipt` is one representative EVM product, priced
+at $0.01 USDC. It validates a Base-mainnet transaction hash, makes exactly two
+read-only calls (`eth_getTransactionReceipt` and `eth_blockNumber`), and returns
+a normalized receipt plus confirmation count. It never signs, sends, or
+simulates a transaction. `BASE_RPC_URL` selects the zero-key upstream.
+
+This experiment intentionally adds one endpoint rather than a family of related
+products. A 402 challenge is not revenue; only an independent non-project wallet
+settlement on Base mainnet passes the demand test.
+
 ## G2 distribution fusion
 
 Public discovery repository:
