@@ -1,5 +1,5 @@
 {
-  "work_status": "deployment_complete_income_pending",
+  "work_status": "deployment_live_unstable_income_pending",
   "generation": 2,
   "product": "PinkHive Website Prep x402 API",
   "public_repository": "https://github.com/1355-XCZ-O/pinkhive-website-prep-x402",
@@ -41,7 +41,7 @@
       "action": "Monitored the human-confirmed Render Blueprint deployment and verified the resulting public service.",
       "result": "success",
       "url": "https://pinkhive-website-prep-x402.onrender.com",
-      "evidence": "GET /health returned HTTP 200 twice; unpaid POST /v1/site-prep returned HTTP 402 with a PAYMENT-REQUIRED header.",
+      "evidence": "GET /health returned HTTP 200 repeatedly and unpaid POST /v1/site-prep returned a valid HTTP 402 challenge, but monitoring also observed intermittent Render 404 x-render-routing:no-server responses.",
       "external_cost_usd": 0
     }
   ],
@@ -51,7 +51,7 @@
     {"check": "decoded Bazaar extension", "result": "present with method POST and input/output schema"},
     {"check": "local mainnet service health before tunnel", "result": "HTTP 200; correct network, receiver, $0.01 price, facilitator, and discovery marker"},
     {"check": "post-attempt process cleanup", "result": "owned cloudflared and Python service processes explicitly stopped; no local G2 service remains"},
-    {"check": "public Render health", "result": "HTTP 200 at https://pinkhive-website-prep-x402.onrender.com/health on two consecutive probes"},
+    {"check": "public Render health", "result": "Reachable with repeated HTTP 200 responses, but unstable: a six-probe short sequence produced five 200 responses and one Render 404 x-render-routing:no-server; the final health probe at 04:44:02 +10:00 was 404 while the immediately following paid route probe reached uvicorn and returned 402"},
     {"check": "public unpaid mainnet challenge", "result": "HTTP 402; PAYMENT-REQUIRED present; exact scheme; eip155:8453; Base USDC; amount 10000; correct payTo; Bazaar metadata present with POST method; resource URL matches public endpoint"}
   ],
   "income": {
@@ -65,14 +65,16 @@
     "A real Base-mainnet x402 challenge no longer requires CDP credentials when a live public facilitator is selected.",
     "Temporary tunnel availability is not equivalent to durable hosting and failed this bounded attempt.",
     "The human-confirmed Render Blueprint produced a durable public hostname and passed health/payment-challenge probes.",
+    "The public hostname is not yet continuously available; intermittent x-render-routing:no-server responses make first-buyer delivery unreliable until the Render deployment stabilizes.",
     "Bazaar metadata can be advertised immediately, but facilitator catalogs generally require a reachable endpoint and may require a successful paid call before indexing."
   ],
   "next_external_gate": {
-    "type": "independent_mainnet_buyer",
-    "minimum_human_action": "No further hosting action is required. A genuinely independent buyer must choose to sign and submit the advertised $0.01 USDC payment before revenue can be recorded.",
+    "type": "render_stability_then_independent_mainnet_buyer",
+    "minimum_human_action": "Inspect the private Render Events/Logs for the latest Blueprint deploy and confirm the service is continuously Live rather than cycling through x-render-routing:no-server. After stability, a genuinely independent buyer must choose to submit the advertised $0.01 USDC payment.",
     "public_endpoint": "https://pinkhive-website-prep-x402.onrender.com/v1/site-prep",
     "verified_offer": ["exact x402 v2", "Base mainnet", "Base USDC", "10000 atomic units", "correct public receiver", "Bazaar POST metadata"],
     "still_not_authorized": [
+      "accessing the owner's private Render dashboard/logs",
       "signing a buyer transaction or manufacturing a self-payment"
     ]
   }

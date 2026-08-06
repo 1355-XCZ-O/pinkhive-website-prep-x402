@@ -107,8 +107,10 @@ discovery, payment fees, support, and idle time dominate the marginal compute.
 
 ## Current deployment status
 
-The durable public service is live at
+The public service has been deployed at
 `https://pinkhive-website-prep-x402.onrender.com`. Health returned HTTP 200 on
-consecutive probes, and an unpaid request to `/v1/site-prep` returned a valid
-Base-mainnet HTTP 402 challenge with Bazaar metadata. This proves deployment and
-payment gating only; revenue remains zero until an independent payment settles.
+multiple probes, and an unpaid request to `/v1/site-prep` returned a valid
+Base-mainnet HTTP 402 challenge with Bazaar metadata. Monitoring also observed
+intermittent Render `404 x-render-routing:no-server` responses, so availability
+is not yet stable. This proves deployment and payment gating only; revenue
+remains zero until an independent payment settles.

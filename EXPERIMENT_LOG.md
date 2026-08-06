@@ -42,6 +42,12 @@ a real machine-purchasable service while keeping every economic claim auditable.
 - An unpaid public POST returned HTTP 402 with `PAYMENT-REQUIRED`: exact scheme,
   Base mainnet, Base USDC, amount 10,000 atomic units ($0.01), the configured
   receiver, and Bazaar POST metadata. This proves gating, not income.
+- Availability was not yet stable at the ten-minute boundary. A short six-probe
+  health sequence returned five HTTP 200 responses and one Render `404` with
+  `x-render-routing: no-server`; the final health request was also 404 while the
+  immediately following paid-route request reached uvicorn and returned 402.
+  The next observable gate is the owner's private Render Events/Logs and a
+  continuously Live service state, not another payment integration change.
 
 ## Revenue accounting rule
 
