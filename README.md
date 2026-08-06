@@ -8,6 +8,13 @@ Current G2 mainnet offer: **$0.01 USDC per successful request** to Base address
 `0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e`. Only a confirmed independent
 mainnet settlement is counted as revenue.
 
+[Deploy the mainnet x402 service on Render](https://render.com/deploy?repo=https://github.com/1355-XCZ-O/pinkhive-website-prep-x402)
+
+That link is the current minimum persistent-hosting gate: Render asks the human
+to sign in/authorize the GitHub repository and confirm creation of the free web
+service. `render.yaml` already contains the public receiver, facilitator,
+network, price, Dockerfile, and health path. No payment credential is required.
+
 ## Why this channel was selected
 
 The artifact is channel-neutral, but the selected G2 settlement path is x402 on
@@ -55,7 +62,7 @@ python -m unittest discover -s tests -v
 ## Deploy without settlement automation
 
 1. Put this directory in a Git repository.
-2. In Render, create a Blueprint from `render.yaml` (or build `Dockerfile`).
+2. For prepaid mode, create a Blueprint from `render.prepaid.yaml` (or build `Dockerfile`).
 3. Set `API_KEYS_JSON` to a JSON list of keys issued only after payment.
 4. Verify `/health` reports `paid_route_ready: true`.
 5. Give the buyer one key and the request example; inspect `/v1/usage` with it.
@@ -82,7 +89,8 @@ external gate is intentionally small but cannot be automated without authority:
    Confirm the receiving address, then deploy the x402 image/start command.
 
 An existing receiving address may instead be supplied with `X402_PAY_TO`.
-`Dockerfile.x402` and `render.x402.yaml` are the ready-to-configure hosted path.
+`Dockerfile.x402` and `render.yaml` are the ready-to-configure mainnet path;
+`render.x402.yaml` is retained as an equivalent explicit variant.
 `settlement_proof` remains null until an independent explorer/facilitator record
 shows a real mainnet payment.
 
@@ -92,6 +100,15 @@ decides that marketplace discovery is worth the fee and payout delay.
 ## Economics
 
 Benchmark the included example with `tests/benchmark.py`. On this local machine,
-the actual result is recorded in `BEE_RESULT.json`. The initial price is $0.02
+the G1 result is recorded in `BEE_RESULT.json`; `G2_RESULT.json` records the
+mainnet launch attempt. The G2 first-settlement price is $0.01
 per successful request. Since conversion is CPU-only and sub-second, hosting,
 discovery, payment fees, support, and idle time dominate the marginal compute.
+
+## Current deployment status
+
+The repository and mainnet payment challenge are verified, but no durable public
+service URL exists yet. A no-account Cloudflare Quick Tunnel was attempted on
+2026-08-07; its process stayed alive but returned no auditable public URL within
+the experiment window, so both the tunnel and local API process were stopped.
+Revenue remains zero.

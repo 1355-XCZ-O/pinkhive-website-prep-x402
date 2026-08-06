@@ -28,6 +28,14 @@ a real machine-purchasable service while keeping every economic claim auditable.
   Base USDC asset, the public receiver, and a POST Bazaar declaration.
 - No private key was accessed, no payment was signed, and no on-chain transaction
   was initiated by the seller.
+- Published the complete experiment at
+  `https://github.com/1355-XCZ-O/pinkhive-website-prep-x402`.
+- Attempted one bounded Cloudflare Quick Tunnel. The local mainnet service was
+  healthy, but the tunnel returned no auditable public URL in the allotted
+  window. Both owned processes were stopped; this is recorded as environmental
+  failure rather than a deployment or revenue success.
+- Prepared a Render Blueprint link as the minimum durable-hosting gate. It needs
+  a human Render sign-in/OAuth confirmation but no payment secret.
 
 ## Revenue accounting rule
 
@@ -44,4 +52,3 @@ settlement transferring USDC to the receiver counts as income.
   authoritative revenue proof until persistent operational storage is added.
 - Public facilitators are external dependencies and should be continuously
   monitored or replaced if their observed behavior changes.
-
