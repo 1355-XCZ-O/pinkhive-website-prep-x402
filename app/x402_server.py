@@ -229,7 +229,7 @@ routes = {
         extensions=evm_receipt_discovery,
     ),
 }
-app = FastAPI(title="PinkHive paid utility API", version="0.3.0")
+app = FastAPI(title="PinkHive paid utility API", version="0.3.1")
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=resource_server)
 meter = Meter()
 
@@ -246,6 +246,7 @@ async def health():
         "evm_receipt_price_usd": EVM_RECEIPT_PRICE,
         "evm_receipt_rpc": os.environ.get("BASE_RPC_URL", "https://mainnet.base.org"),
         "revision": os.environ.get("RENDER_GIT_COMMIT", "local"),
+        "app_version": app.version,
         "facilitator": facilitator_config.url,
         "discovery_extension": "bazaar",
     }
