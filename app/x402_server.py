@@ -4,7 +4,7 @@ import os
 
 from cdp import CdpClient
 from cdp.x402 import create_facilitator_config
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from x402.http import FacilitatorConfig, HTTPFacilitatorClient, PaymentOption
 from x402.http.middleware.fastapi import PaymentMiddlewareASGI
 from x402.http.types import RouteConfig
@@ -15,12 +15,14 @@ from x402.extensions.bazaar import OutputConfig, bazaar_resource_server_extensio
 from .core import build_site_bundle
 from .evm_receipt import RpcError, query_base_receipt
 from .metering import Meter
+from .salary_audit import build_salary_audit
 from .ship_guard import build_ship_guard_bundle
 
 NETWORK = os.environ.get("X402_NETWORK", "eip155:84532")
 PRICE = os.environ.get("PRICE_USD", "0.02")
 SHIP_GUARD_PRICE = os.environ.get("SHIP_GUARD_PRICE_USD", "0.05")
 EVM_RECEIPT_PRICE = os.environ.get("EVM_RECEIPT_PRICE_USD", "0.01")
+SALARY_AUDIT_PRICE = os.environ.get("SALARY_AUDIT_PRICE_USD", "0.01")
 DEFAULT_PAY_TO = "0x8CfB0c37Af0C40f96c44fd45FdEC30b430Bc6A6e"
 
 
@@ -203,6 +205,20 @@ evm_receipt_discovery = declare_discovery_extension(
     ),
 )
 evm_receipt_discovery["bazaar"]["info"]["input"]["method"] = "POST"
+salary_audit_discovery = declare_discovery_extension(
+    input={"job_postings": [{"@type": "JobPosting", "title": "Data Analyst", "baseSalary": {"currency": "USD", "value": {"minValue": 90000, "maxValue": 110000, "unitText": "YEAR"}}}]},
+    input_schema={
+        "type": "object", "additionalProperties": False, "required": ["job_postings"],
+        "properties": {"job_postings": {
+            "type": "array", "minItems": 1, "maxItems": 25,
+            "items": {"type": "object", "required": ["@type"], "properties": {
+                "@type": {"oneOf": [{"const": "JobPosting"}, {"type": "array", "contains": {"const": "JobPosting"}}]}
+            }},
+        }},
+    },
+    body_type="json", output=OutputConfig(example={"request_id": "uuid", "metered_units": 1, "audits": [{"job_id": "Data Analyst", "disclosure_status": "disclosed", "issues": []}]}, schema={"type": "object"}),
+)
+salary_audit_discovery["bazaar"]["info"]["input"]["method"] = "POST"
 routes = {
     "POST /v1/site-prep": RouteConfig(
         accepts=[PaymentOption(scheme="exact", pay_to=PAY_TO, price=f"${PRICE}", network=NETWORK)],
@@ -228,6 +244,11 @@ routes = {
         tags=["base", "evm", "transaction", "receipt", "confirmations"],
         extensions=evm_receipt_discovery,
     ),
+    "POST /v1/salary-disclosure-audit": RouteConfig(
+        accepts=[PaymentOption(scheme="exact", pay_to=PAY_TO, price=f"${SALARY_AUDIT_PRICE}", network=NETWORK)],
+        mime_type="application/json", description="Audit salary disclosure fields in up to 25 JSON-LD JobPosting objects",
+        service_name="PinkHive Salary Disclosure Auditor", tags=["salary", "jobposting", "compliance", "json-ld"], extensions=salary_audit_discovery,
+    ),
 }
 app = FastAPI(title="PinkHive paid utility API", version="0.3.1")
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=resource_server)
@@ -244,6 +265,7 @@ async def health():
         "price_usd": PRICE,
         "ship_guard_price_usd": SHIP_GUARD_PRICE,
         "evm_receipt_price_usd": EVM_RECEIPT_PRICE,
+        "salary_audit_price_usd": SALARY_AUDIT_PRICE,
         "evm_receipt_rpc": os.environ.get("BASE_RPC_URL", "https://mainnet.base.org"),
         "revision": os.environ.get("RENDER_GIT_COMMIT", "local"),
         "app_version": app.version,
@@ -261,6 +283,7 @@ async def product():
             {"route": "POST /v1/site-prep", "price_usd": PRICE, "unit": "convert 1-20 supplied HTML pages"},
             {"route": "POST /v1/claude-ship-guard", "price_usd": SHIP_GUARD_PRICE, "unit": "generate one customized guard ZIP"},
             {"route": "POST /v1/base-transaction-receipt", "price_usd": EVM_RECEIPT_PRICE, "unit": "normalize one Base transaction receipt using two read-only RPC calls"},
+            {"route": "POST /v1/salary-disclosure-audit", "price_usd": SALARY_AUDIT_PRICE, "unit": "audit 1-25 JSON-LD JobPosting objects"},
         ],
         "health": "/health",
         "docs": "/docs",
@@ -301,5 +324,16 @@ async def base_transaction_receipt(payload: dict):
     except RpcError as exc:
         raise HTTPException(status_code=503, detail="Base RPC temporarily unavailable") from exc
     request_id = meter.record("x402-settled", "/v1/base-transaction-receipt", 200, 1, len(str(payload)), len(str(result)))
+    result.update({"request_id": request_id, "metered_units": 1})
+    return result
+
+
+@app.post("/v1/salary-disclosure-audit")
+async def salary_disclosure_audit(payload: dict, idempotency_key: str | None = Header(default=None)):
+    try:
+        result = build_salary_audit(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    request_id = meter.record("x402-settled", "/v1/salary-disclosure-audit", 200, 1, len(str(payload)), 0, idempotency_key)
     result.update({"request_id": request_id, "metered_units": 1})
     return result

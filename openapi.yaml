@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: PinkHive Paid Utility API
   version: 0.2.0
-  description: Deterministic website-prep and customized Claude Code guard products paid through x402.
+  description: Deterministic website-prep, guard, receipt, and salary-disclosure products paid through x402.
 servers:
   - url: https://pinkhive-website-prep-x402.onrender.com
 paths:
@@ -53,6 +53,25 @@ paths:
           description: Invalid customization request
         "402":
           description: Base USDC payment required through x402
+  /v1/salary-disclosure-audit:
+    post:
+      operationId: auditSalaryDisclosure
+      summary: Audit salary disclosure fields in JSON-LD JobPosting objects
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema: {type: string, minLength: 1, maxLength: 255}
+          description: Retrying with the same key returns the original metering receipt without another meter unit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SalaryAuditRequest"}
+      responses:
+        "200": {description: One metered audit request}
+        "400": {description: Invalid body, not metered}
+        "402": {description: Base USDC payment required through x402}
 components:
   schemas:
     Page:
@@ -74,6 +93,24 @@ components:
           maxItems: 3
           items: {type: string, enum: [cloud, github, generic]}
         max_subject_length: {type: integer, minimum: 50, maximum: 100, default: 72}
+    SalaryAuditRequest:
+      type: object
+      additionalProperties: false
+      required: [job_postings]
+      properties:
+        job_postings:
+          type: array
+          minItems: 1
+          maxItems: 25
+          items:
+            type: object
+            required: ["@type"]
+            properties:
+              "@type":
+                oneOf:
+                  - const: JobPosting
+                  - type: array
+                    contains: {const: JobPosting}
     SiteRequest:
       type: object
       required: [site_name, site_summary, pages]

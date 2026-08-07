@@ -2,6 +2,16 @@
 
 ## G5 EVM demand representative
 
+## Salary-disclosure audit
+
+`POST /v1/salary-disclosure-audit` assesses the salary fields in 1-25 supplied
+JSON-LD `JobPosting` objects for **$0.01 USDC per successful request**. See
+[`examples/salary_audit_request.json`](examples/salary_audit_request.json) for
+the customer body. Retrying with an `Idempotency-Key` records just one meter
+unit for the same paid identity and route; invalid bodies are not metered.
+The explicit offer configuration is in `config/pricing.json` and can be
+overridden through `SALARY_AUDIT_PRICE_USD`.
+
 `POST /v1/base-transaction-receipt` is one representative EVM product, priced
 at $0.01 USDC. It validates a Base-mainnet transaction hash, makes exactly two
 read-only calls (`eth_getTransactionReceipt` and `eth_blockNumber`), and returns

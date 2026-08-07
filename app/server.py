@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .core import build_site_bundle
 from .metering import Meter, configured_api_keys
+from .salary_audit import build_salary_audit
 
 MAX_BODY_BYTES = int(os.environ.get("MAX_BODY_BYTES", "2000000"))
 PRICE_USD = os.environ.get("PRICE_USD", "0.02")
@@ -34,7 +35,7 @@ class Handler(BaseHTTPRequestHandler):
             keys = configured_api_keys()
             self.send_json(200, {"status": "ok", "paid_route_ready": bool(keys), "metering": "sqlite", "price_usd_per_request": PRICE_USD})
         elif self.path == "/v1/pricing":
-            self.send_json(200, {"product": "website-prep", "unit": "one request, up to 20 supplied HTML pages", "price_usd": PRICE_USD, "payment_modes": ["x402", "prepaid_api_key"]})
+            self.send_json(200, {"products": [{"product": "website-prep", "unit": "one request, up to 20 supplied HTML pages", "price_usd": PRICE_USD}, {"product": "salary-disclosure-audit", "unit": "one request, up to 25 JSON-LD JobPosting objects", "price_usd": os.environ.get("SALARY_AUDIT_PRICE_USD", "0.01")}], "payment_modes": ["x402", "prepaid_api_key"]})
         elif self.path == "/v1/usage":
             if not self.authorized():
                 self.send_json(401, {"error": "valid X-API-Key required"})
@@ -44,7 +45,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(404, {"error": "not found"})
 
     def do_POST(self):
-        if self.path != "/v1/site-prep":
+        if self.path not in {"/v1/site-prep", "/v1/salary-disclosure-audit"}:
             self.send_json(404, {"error": "not found"})
             return
         if not self.authorized():
@@ -61,12 +62,13 @@ class Handler(BaseHTTPRequestHandler):
         started = time.perf_counter()
         try:
             payload = json.loads(self.rfile.read(length))
-            result = build_site_bundle(payload)
+            result = build_site_bundle(payload) if self.path == "/v1/site-prep" else build_salary_audit(payload)
         except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             self.send_json(400, {"error": str(exc)})
             return
         elapsed = (time.perf_counter() - started) * 1000
-        request_id = self.meter.record(self.api_key(), self.path, 200, 1, result["unit"]["input_html_chars"], elapsed)
+        input_chars = result["unit"].get("input_html_chars", length)
+        request_id = self.meter.record(self.api_key(), self.path, 200, 1, input_chars, elapsed, self.headers.get("Idempotency-Key"))
         result["request_id"] = request_id
         result["metered_units"] = 1
         self.send_json(200, result)

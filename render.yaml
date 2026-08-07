@@ -22,5 +22,7 @@ services:
         value: "0.05"
       - key: EVM_RECEIPT_PRICE_USD
         value: "0.01"
+      - key: SALARY_AUDIT_PRICE_USD
+        value: "0.01"
       - key: BASE_RPC_URL
         value: https://mainnet.base.org

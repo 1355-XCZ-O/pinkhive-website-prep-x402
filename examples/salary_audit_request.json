@@ -1,0 +1,10 @@
+{
+  "job_postings": [
+    {
+      "@type": "JobPosting",
+      "identifier": "data-analyst-42",
+      "title": "Data Analyst",
+      "baseSalary": {"currency": "USD", "value": {"minValue": 90000, "maxValue": 110000, "unitText": "YEAR"}}
+    }
+  ]
+}

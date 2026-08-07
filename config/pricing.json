@@ -2,6 +2,12 @@
   "currency": "USD",
   "introductory_price_per_request": 0.01,
   "unit": "one successful POST /v1/site-prep, maximum 20 supplied pages and 1,000,000 HTML characters",
+  "salary_disclosure_audit": {
+    "price_usd": 0.01,
+    "unit": "one successful POST /v1/salary-disclosure-audit for 1-25 supplied JSON-LD JobPosting objects",
+    "idempotency_header": "Idempotency-Key",
+    "failed_requests_charged": false
+  },
   "failed_requests_charged": false,
   "estimated_marginal_compute_usd": 0.000003,
   "gross_margin_before_hosting_and_payment_fees_percent": 99.985,
